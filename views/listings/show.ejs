@@ -1,0 +1,344 @@
+<% layout("layouts/boilerplate") %>
+
+<style>
+/* Listing + Booking layout */
+.listing-container {
+  display: flex;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.listing-main {
+  flex: 2;
+}
+
+.listing-sidebar {
+  flex: 1;
+}
+
+/* Listing card */
+.show-card {
+  border: 1px solid #e4e4e4;
+  border-radius: 14px;
+  padding: 16px;
+  background: #fff;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+.show-img {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  object-fit: cover; /* keep aspect ratio */
+  max-height: 400px;
+}
+
+/* Booking Card */
+.bnb-booking-card {
+  border: 1px solid #e4e4e4;
+  border-radius: 14px;
+  padding: 16px;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  margin-top: 16px;
+}
+
+.bnb-price {
+  margin-bottom: 14px;
+  font-size: 1.2rem;
+}
+
+.bnb-dates, .bnb-guests {
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin-top: 10px;
+}
+
+.bnb-dates {
+  display: flex;
+}
+
+.bnb-date {
+  flex: 1;
+}
+
+.bnb-date:first-child {
+  border-right: 1px solid #aaa;
+}
+
+.bnb-date label,
+.bnb-guests label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.bnb-date input, .bnb-guests select {
+  border: none;
+  width: 100%;
+  outline: none;
+  font-size: 0.9rem;
+}
+
+.bnb-reserve-btn {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(90deg, #e61e4d, #d70466);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.bnb-reserve-btn:hover {
+  opacity: 0.95;
+}
+
+.bnb-note {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+/* Reviews scrollable with snap */
+.reviews-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding-bottom: 10px;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+}
+
+.reviews-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.reviews-scroll::-webkit-scrollbar-thumb {
+  background-color: #d70466;
+  border-radius: 3px;
+}
+
+.review-card {
+  min-width: 280px;
+  max-width: 280px;
+  flex: 0 0 auto;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  scroll-snap-align: start;
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.review-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #222;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.review-user h6 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.stars {
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  color: #e5a200;
+}
+
+.review-text {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-top: 6px;
+}
+
+.show-more {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  color: #d70466;
+}
+
+.review-delete-btn {
+  margin-top: 6px;
+}
+
+/* Leave a Review form side by side */
+.review-form-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  max-width: 720px;
+  margin-top: 20px;
+}
+
+.review-rating {
+  flex: 1 1 180px;
+}
+
+.review-comment-submit {
+  flex: 2 1 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.submit-right {
+  display: flex;
+  justify-content: flex-end;
+}
+</style>
+
+<div class="listing-container">
+  <!-- Main Listing -->
+  <div class="listing-main">
+    <div class="show-card">
+      <img src="<%=listing.image.url %>" alt="listing_img" class="show-img">
+      <h3><b><%=listing.title%></b></h3>
+      <p>Host - <i><%=listing.owner.username%></i></p>
+      <p><%=listing.description %></p>
+      <p>&#8377;<%= listing.price.toLocaleString("en-IN") %>/night</p>
+      <p><%=listing.location %>, <%=listing.country %></p>
+
+      <% if (currUser && listing.owner && currUser._id.toString() === listing.owner._id.toString()) { %>
+        <div class="btns mt-2">
+          <a href="/listings/<%=listing._id%>/edit" class="btn btn-dark">Edit</a> 
+          <form action="/listings/<%=listing._id%>?_method=DELETE" method="POST" style="display:inline;">
+            <button class="btn btn-dark ml-2">Delete</button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Booking Sidebar -->
+  <div class="listing-sidebar">
+    <div class="bnb-booking-card">
+      <div class="bnb-price">
+        <span class="new-price">₹<%= listing.price.toLocaleString("en-IN") %></span>
+        <span class="night-text">for 1 night</span>
+      </div>
+
+      <form action="/listings/<%= listing._id %>/book" method="POST">
+        <div class="bnb-dates">
+          <div class="bnb-date">
+            <label>CHECK-IN</label>
+            <input type="date" name="booking[checkIn]" required>
+          </div>
+          <div class="bnb-date">
+            <label>CHECKOUT</label>
+            <input type="date" name="booking[checkOut]" required>
+          </div>
+        </div>
+
+        <div class="bnb-guests">
+          <label>GUESTS</label>
+          <select name="booking[guests]" required>
+            <option>1 guest</option>
+            <option>2 guests</option>
+            <option>3 guests</option>
+            <option>4 guests</option>
+          </select>
+        </div>
+
+        <% if(currUser) { %>
+          <button class="bnb-reserve-btn">Reserve</button>
+          <p class="bnb-note">You won’t be charged yet</p>
+        <% } else { %>
+          <a href="/login" class="bnb-reserve-btn text-center">Login to Reserve</a>
+        <% } %>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Reviews + Leave a Review -->
+<div class="reviews-section">
+  <% if(listing.reviews.length > 0) { %>
+    <h4 class="mt-4 mb-3">Reviews</h4>
+    <div class="reviews-scroll">
+      <% for(let review of listing.reviews) { %>
+        <div class="review-card">
+          <div class="review-user">
+            <div class="user-avatar"><%= review.author.username.charAt(0).toUpperCase() %></div>
+            <div><h6><%= review.author.username %></h6></div>
+          </div>
+          <div class="review-meta mt-1">
+            <span class="stars"><% for(let i=0;i<review.rating;i++){ %>★<% } %></span>
+            <span class="time">· <%= review.createdAt.toDateString() %></span>
+          </div>
+          <p class="review-text">
+            <%= review.comment.length > 150 ? review.comment.slice(0,150)+"..." : review.comment %>
+          </p>
+
+          <% if(currUser && review.author._id.toString() === currUser._id.toString()){ %>
+            <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" class="review-delete-btn">
+              <button class="btn btn-sm btn-dark">Delete</button>
+            </form>
+          <% } %>
+
+          <% if(review.comment.length > 150){ %>
+            <span class="show-more">Show more</span>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+
+  <% if(currUser) { %>
+    <h4 class="mt-4 mb-3">Leave a Review</h4>
+    <form action="/listings/<%=listing.id%>/reviews" method="POST" novalidate class="needs-validation mb-3 review-form">
+      <div class="review-form-container">
+        <div class="review-rating">
+          <label for="rating" class="form-label">Rating</label>
+          <fieldset class="starability-slot">
+            <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+            <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+            <label for="first-rate1" title="Terrible">1 star</label>
+            <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+            <label for="first-rate2" title="Not good">2 stars</label>
+            <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+            <label for="first-rate3" title="Average">3 stars</label>
+            <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+            <label for="first-rate4" title="Very good">4 stars</label>
+            <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+            <label for="first-rate5" title="Amazing">5 stars</label>
+          </fieldset>
+        </div>
+
+        <div class="review-comment-submit">
+          <label for="comment" class="form-label">Comment</label>
+          <textarea class="form-control" name="review[comment]" id="comment" cols="30" rows="3" required></textarea>
+          <div class="invalid-feedback">Please add some comments for Review</div>
+          <div class="submit-right">
+            <button class="btn btn-outline-dark mt-2">Submit</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  <% } %>
+</div>
