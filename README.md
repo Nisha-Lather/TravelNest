@@ -36,23 +36,9 @@ Database
 
  Frontend & Backend deployed on Render
 
-
- 📂 Project Structure
-
-
-TravelNest/
-│── server/        # Node.js & Express backend
-│── models/        # Mongoose schemas
-│── routes/        # API routes
-│── controllers/  # Request handling logic
-│── public/        # Static assets
-│── views/         # EJS templates (if applicable)
-│── app.js         # Main server file
-
-
  🌐 Live Demo
 
-👉 Deployed on Render: 
+👉 Deployed on Render: https://travelnest-26fj.onrender.com/
 
 
 
