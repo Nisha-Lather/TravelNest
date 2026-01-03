@@ -38,7 +38,7 @@ Database
 
  🌐 Live Demo
 
-👉 Deployed on Render: https://travelnest-26fj.onrender.com/
+👉 Deployed on Render:(https://travelnest-26fj.onrender.com/listings)
 
 
 
